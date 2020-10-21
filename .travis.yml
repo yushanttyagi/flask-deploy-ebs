@@ -1,0 +1,43 @@
+os:
+  - linux
+
+services:
+  - docker
+
+language: python
+
+sudo: required
+
+before_install:
+  - docker pull cassandra
+  - docker build -t flaskk -f Dockerfile.dev .
+  - docker build -t nginx-test ./nginx
+
+script:
+  - docker run --name cassandrai -d cassandra
+  - docker run -d flaskk
+  - docker run -d nginx-test
+
+
+after_success:
+  - docker build -t yushanttyagi/flask_app_yt:latest .
+  - docker build -t yushanttyagi/nginx-multi:latest ./nginx
+
+  #login to docker
+  - echo "$DOCKER_PASS" | docker login -u "$DOCKER_ID" --password-stdin
+  #push the images
+  - docker push yushanttyagi/flask_app_yt:latest
+  - docker push yushanttyagi/nginx-multi:latest
+
+#deploy:
+  #provider: elasticbeanstalk
+  #region: "us-east-2"
+  #app: "Flask-Multi-Deploy"
+  #env: "FlaskMultiDeploy-env"
+  #bucket_name: "elasticbeanstalk-us-east-2-305327626004"
+  #bucket_path: "docker-multi"
+  #on:
+  #  branch: master
+
+  #access_key_id: $AWS_ACCESS_KEY
+  #secret_access_key: $AWS_SECRET_KEY

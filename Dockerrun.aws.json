@@ -1,0 +1,38 @@
+{
+	"AWSEBDockerrunVersion": 2,
+	"containerDefinitions": [
+		{
+			"name": "cassandrai",
+			"image": "cassandra:latest",
+			"hostname": "cassandrai",
+			"essential": false,
+			"memory": 500
+		},
+
+		{
+			"name": "myapp",
+			"image": "yushanttyagi/flask_app_yt:latest",
+			"hostname": "myapp",
+			"essential": false,
+			"memory": 150,
+			"portMappings": [{
+				"hostPort": 5001,
+				"containerPort": 5001
+			}],
+			"links": ["cassandrai"]
+		},
+		{
+			"name": "nginxc3",
+			"image": "yushanttyagi/nginx-multi:latest",
+			"hostname": "nginxc3",
+			"essential": true,
+			"memory": 150,
+			"portMappings": [{
+				"hostPort": 80,
+				"containerPort": 80
+			}],
+
+			"links": ["myapp"]
+		}
+	]
+}

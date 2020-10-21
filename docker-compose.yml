@@ -1,0 +1,40 @@
+version: '3'
+
+networks:
+  app-tier:
+    driver: bridge
+
+
+services:
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - '8080:80'
+    depends_on:
+      - myapp
+    networks:
+      - app-tier
+
+
+  cassandrai:
+    image: cassandra:latest
+    volumes:
+      - .:/cassvol
+    networks:
+      - app-tier
+
+
+  myapp:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/app
+    restart: on-failure
+    networks:
+      - app-tier
+    depends_on:
+      - cassandrai
