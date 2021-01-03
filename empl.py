@@ -22,7 +22,7 @@ session,cluster=cassandra_connection()
 print('connection successfull ---------------- SUCCCCCEEEEEEEEEEEEEEEEEEEEESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS')
 @app.route("/")
 def pri():
-	return render_template("employee.html",title="employee registration")
+	return render_template("employee.html",title="employee registration and much more")
 
 
 @app.route("/register",methods=["POST"])
